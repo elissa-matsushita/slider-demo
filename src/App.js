@@ -1,25 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-
+import './App.scss';
+ 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div className="glide">
+  <div className="glide__track" data-glide-el="track">
+    <ul className="glide__slides">
+      <li className="glide__slide">0</li>
+      <li className="glide__slide">1</li>
+      <li className="glide__slide">2</li>
+    </ul>
+  </div>
+</div>
   );
 }
 
