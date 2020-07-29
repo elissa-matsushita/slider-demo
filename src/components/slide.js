@@ -18,7 +18,7 @@ const Image = styled.div`
     width: ${props => props.isActive ? '100%' : '100%'};
     background-image: url('${props => props.content}');
     opacity: ${props => props.isActive ? '1' : '0.7'};
-    transition:${props => props.transitionEnabled ? 'opacity 1.5s, transform 1.7s, box-shadow 1.2s ease-in-out' : '0'};
+    transition:${props => props.transition ? 'opacity 1.5s, transform 1.7s, box-shadow 1.2s ease-in-out' : '0'};
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -43,27 +43,10 @@ const SlideComponent = styled.div`
     width:${props => props.width}px;
 `;
 
-const MainHeader = styled.h2`
-    visibility: ${props => props.isActive ? 'visible' : 'hidden'};
-    opacity: ${props => props.isActive ? '1' :'0'};
-    transition: ${props => props.transitionEnabled ? 'visibility 0.5s, opacity 1.2s ease-in-out 1.2s' : '0'};
-    text-align: center;
-    color: #4B286D;
-`;
-
-const Text = styled.p`
-    visibility: ${props => props.isActive ? 'visible' : 'hidden'};
-    opacity: ${props => props.isActive ? '1' :'0'};
-    transition: visibility 0.5s, opacity 1.2s ease-in-out 1.2s;
-    text-align: center;
-    width: 100%;
-`;
-
-
-const Slide = ({ content, isActive, width, onClick, transitionEnabled }) => (
+const Slide = ({ content, isActive, width, onClick, transition }) => (
   <SlideComponent width={width}>
     <ImageContainer>
-        <Image onClick={!isActive && onClick} content={content} isActive={isActive} transitionEnabled={transitionEnabled}/>
+        <Image onClick={!isActive && onClick} content={content} isActive={isActive} transition={transition}/>
     </ImageContainer>
   </SlideComponent>
 

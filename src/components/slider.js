@@ -4,17 +4,8 @@ import Slide from './slide';
 import LeftArrow from './leftArrow';
 import RightArrow from './rightArrow';
 import Dots from './dots';
-import styled, {keyframes} from 'styled-components';
+import styled from 'styled-components';
 
-const fadeIn = keyframes`
-    0% {
-        visibility: 'visible';
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-`;
 
 
 const Text = styled.p`
@@ -69,13 +60,12 @@ const Slider = ({ slides, autoplay }) => {
     const getWidth = () => window.innerWidth
 
     let firstRender = true;
+    let jump = false;
 
     const firstSlide = slides[0]
     const secondSlide = slides[1]
     const secondLastSlide = slides[slides.length - 2]
     const lastSlide = slides[slides.length - 1]
-
-    let currentIndex = 2;
 
     const [state, setState] = useState({
         activeIndex: 2,
@@ -140,51 +130,21 @@ const Slider = ({ slides, autoplay }) => {
         })
     }
 
-    // const smoothTransition = () => {
-    // //     let _slides = []
-
-    // //     // Case for last slide.
-    // //     if (activeIndex === slides.length - 1) {
-    // //         _slides = [slides[slides.length - 2], lastSlide, firstSlide]
-    // //     } 
-    // //    // Case for first slide 
-    // //     else if (activeIndex === 0) {
-    // //         _slides = [lastSlide, firstSlide, secondSlide]
-    // //     } 
-    // //     // All other cases - create array of previous last side and the next two slides that follow
-    // //     else {
-    // //         _slides = slides.slice(activeIndex - 1, activeIndex + 2)
-    // //     }
-    
-    //     setState({
-    //       ...state,
-    //       _slides,
-    //       transition: 0,
-    //       translate: getWidth()
-    //     })
-    // };
-
-    // useEffect(() => {
-    //     if (transition === 0) setState({ ...state, transition: 1.7 })
-    //   }, [transition])
-    
-    useEffect(() => { console.log('activeIndex after', activeIndex)});
-
-
     //Trying to trigger "nextSlide" when activeIndex jumps to 2, but not working
-    useEffect(() => {
-        if (!firstRender && activeIndex === 2  ) {
-            nextSlide();
-        } else {
-            return;
-        }
-    })
+    // useEffect(() => {
+    //     if (!firstRender && activeIndex === 2  ) {
+    //         nextSlide();
+    //     } else {
+    //         return;
+    //     }
+    // })
+
 
     const nextSlide = () => {
 
-
         if (activeIndex === _slides.length - 2) {
             firstRender = false;
+            jump = true;
             setState({
                 ...state,
                 translate: getWidth()*0.75,
@@ -193,6 +153,7 @@ const Slider = ({ slides, autoplay }) => {
               })
         }
         else {
+            jump = false;
             setState({
                 ...state,
                 translate: translate + (getWidth()*0.5),
@@ -200,21 +161,28 @@ const Slider = ({ slides, autoplay }) => {
                 transition: 1.7
               })
         }
-        // setState({
-        //     ...state,
-        //     translate: activeIndex === _slides.length - 2 ? getWidth()*0.75 : translate + (getWidth()*0.5),
-        //     activeIndex: activeIndex === _slides.length - 2 ? 2 :  activeIndex + 1,
-        //     transition: activeIndex === _slides.length - 2 ? 0 : 1.7
-        //   })
     };
 
   
     const prevSlide = () => {
-        setState({
-            ...state,
-            translate: activeIndex === 1 ? ((getWidth()*0.5 * (_slides.length-3)) - (getWidth()*0.25)) : translate - (getWidth()*0.5),
-            activeIndex: activeIndex === 1 ? _slides.length - 3 : activeIndex - 1
-          })
+        if (activeIndex === 1) {
+            jump = true;
+            setState({
+                ...state,
+                translate: ((getWidth()*0.5 * (_slides.length-3)) - (getWidth()*0.25)),
+                activeIndex:  _slides.length - 3,
+                transition: 0
+            })
+        }
+        else {
+            jump = false;
+            setState({
+                ...state,
+                translate: translate - (getWidth()*0.5),
+                activeIndex: activeIndex - 1,
+                transition: 1.7
+            })
+        }
     };
   
     return (
@@ -224,7 +192,6 @@ const Slider = ({ slides, autoplay }) => {
           translate={translate}
           transition={ transition }
           width={getWidth() * _slides.length}
-        //   margin={getWidth()* 0.25}
         >
           {
               _slides.map((slide,i) => (
@@ -235,7 +202,8 @@ const Slider = ({ slides, autoplay }) => {
                     isActive={i===activeIndex}
                     width={getWidth()*0.5}
                     onClick={nextSlide}
-                    transitionEnabled={activeIndex === 2 ? false : true}
+                    transition={transition}
+                    transitionEnabled={ jump ? false : true}
                   />
               ))
           }
