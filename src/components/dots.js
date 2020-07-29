@@ -2,11 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Dot = styled.span`
+    // display: ${props => props.hide ? 'none' : 'block'};
     margin-right: 10px;
     cursor: pointer;
     height: 3px;
     width: 45px;
-    background: ${props => props.active ? '#4B286D' : '#D8D8D8'};
+    background: #d8d8d8;
+    &:before {
+        position: absolute;
+        display: block;
+        content: " ";
+        background: #4B286D;
+        height: 3px;
+        transition: ${props => props.active ? 'width 2s linear' : 'none'};
+        width: ${props => props.active ? '45px' : '0px'};
+    }
 `;
 
 const DotComponent = styled.div`
@@ -18,12 +28,14 @@ const DotComponent = styled.div`
     justify-content: center;
 `;
 
-const Dots = ({ slides, activeIndex }) => (
-  <DotComponent>
+const Dots = ({ slides, activeIndex, _slides }) => {
+  return (
+    <DotComponent>
     {slides.map((slide, i) => (
-      <Dot key={slide} active={activeIndex === i} />
+      <Dot key={slide} active={activeIndex - 2 === i || (activeIndex - 2 === i && slides.length - 1 === i)}  />
     ))}
   </DotComponent>
-)
+  )
+};
 
 export default Dots;

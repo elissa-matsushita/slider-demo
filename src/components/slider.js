@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import SliderContent from './sliderContent';
 import Slide from './slide';
 import LeftArrow from './leftArrow';
@@ -77,11 +77,6 @@ const Slider = ({ slides, autoplay }) => {
       const autoPlayRef = useRef();
       const resizeRef = useRef();
 
-
-  
-
-    // const transitionRef = useRef()
-
     useEffect(() => {
         autoPlayRef.current = nextSlide;
         resizeRef.current = handleResize;
@@ -93,18 +88,11 @@ const Slider = ({ slides, autoplay }) => {
             autoPlayRef.current()
         }
 
-        // const smooth = e => {
-        //     if (e.target.className.includes('slider-content')) {
-        //       transitionRef.current()
-        //     }
-        //   }
-      
         const resize = () => {
             resizeRef.current()
         }
 
         let interval = null;
-        // const transitionEnd = window.addEventListener('transitionend', smooth)
         const onResize = window.addEventListener('resize', resize)
         
         if (autoplay !== null) {
@@ -128,14 +116,37 @@ const Slider = ({ slides, autoplay }) => {
         })
     }
 
-    //Trying to trigger "nextSlide" when activeIndex jumps to 2, but not working
+
     useEffect(() => {
-        if (jump && activeIndex === 2  ) {
-            nextSlide();
+        if (jump && activeIndex === _slides.length - 2) {
+            setState({
+                ...state,
+                translate: getWidth()*0.75,
+                activeIndex: 2,
+                transition: 0
+              })
+            
+            // nextSlide();
+            console.log("active Index in use effect: ", activeIndex)
         } else {
             return;
         }
     }, [jump, activeIndex])
+
+    // useEffect(() => {
+    //     if (activeIndex === 6) {
+    //         setState({
+    //             ...state,
+    //             cloneIndex: 2
+    //         })
+    //     } else {
+    //         setState({
+    //             ...state,
+    //             cloneIndex: -1
+    //         })
+    //     }
+    //     console.log("clone index: ", state.cloneIndex)
+    // },[activeIndex])
 
     useEffect(() => {
         if (jump && activeIndex === _slides.length - 3 ) {
@@ -147,13 +158,13 @@ const Slider = ({ slides, autoplay }) => {
 
 
     const nextSlide = () => {
-        
-        if (activeIndex === _slides.length - 2) {
+        console.log("Active index in next slide: ", activeIndex)
+        if (activeIndex === _slides.length - 3) {
             setState({
                 ...state,
-                translate: getWidth()*0.75,
-                activeIndex: 2,
-                transition: 0,
+                translate: translate + (getWidth()*0.5),
+                activeIndex: activeIndex + 1,
+                transition: 1.7,
                 jump: true
               })
         }
@@ -165,7 +176,25 @@ const Slider = ({ slides, autoplay }) => {
                 transition: 1.7,
                 jump: false
               })
-        }
+            }
+        // if (activeIndex === _slides.length - 2) {
+        //     setState({
+        //         ...state,
+        //         translate: getWidth()*0.75,
+        //         activeIndex: 2,
+        //         transition: 0,
+        //         jump: true
+        //       })
+        // }
+        // else {
+        //     setState({
+        //         ...state,
+        //         translate: translate + (getWidth()*0.5),
+        //         activeIndex: activeIndex + 1,
+        //         transition: 1.7,
+        //         jump: false
+        //       })
+        // }
     };
 
   
@@ -206,7 +235,7 @@ const Slider = ({ slides, autoplay }) => {
                     mainHeading={slide.mainHeading}
                     isActive={i===activeIndex}
                     width={getWidth()*0.5}
-                    onClick={nextSlide}
+                    onClick={i === activeIndex - 1 ? prevSlide : nextSlide}
                     transition={transition}
                   />
               ))
@@ -226,7 +255,7 @@ const Slider = ({ slides, autoplay }) => {
         <ButtonContainer>
             <Button>Learn about this theme pack</Button>
         </ButtonContainer>
-        <Dots slides={slides} activeIndex={activeIndex} />
+        <Dots slides={slides} activeIndex={activeIndex} _slides={_slides}  />
       </SliderComponent>
     )
   }

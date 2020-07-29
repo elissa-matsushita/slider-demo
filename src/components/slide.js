@@ -1,16 +1,5 @@
 import React from 'react'
-import styled, {keyframes} from 'styled-components';
-
-const fadeIn = keyframes`
-    0% {
-        visibility: 'visible';
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-
-`;
+import styled from 'styled-components';
 
 const Image = styled.div`
     height: 70%;
