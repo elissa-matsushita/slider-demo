@@ -11,7 +11,7 @@ import styled from 'styled-components';
 const Text = styled.p`
     visibility: ${props => props.isActive ? 'visible' : 'hidden'};
     opacity: ${props => props.isActive ? '1' :'0'};
-    transition: ${props => props.transitionEnabled ? 'visibility 0s, opacity 1.2s ease-in-out 1.2s' : '0'};
+    transition: ${props => props.transition ? 'visibility 0s, opacity 1.2s ease-in-out 1.2s' : '0'};
     text-align: center;
     position: absolute;
     bottom: 18%;
@@ -22,7 +22,7 @@ const Text = styled.p`
 const MainHeader = styled.h2`
     visibility: ${props => props.isActive ? 'visible' : 'hidden'};
     opacity: ${props => props.isActive ? '1' :'0'};
-    transition: ${props => props.transitionEnabled ? 'visibility 0s, opacity 1.2s ease-in-out 1.2s' : '0'};
+    transition: ${props => props.transition ? 'visibility 0s, opacity 1.2s ease-in-out 1.2s' : '0'};
     text-align: center;
     color: #4B286D;
     position: absolute;
@@ -58,9 +58,6 @@ const Button = styled.button`
 const Slider = ({ slides, autoplay }) => {
 
     const getWidth = () => window.innerWidth
-
-    let firstRender = true;
-    let jump = false;
 
     const firstSlide = slides[0]
     const secondSlide = slides[1]
@@ -143,8 +140,6 @@ const Slider = ({ slides, autoplay }) => {
     const nextSlide = () => {
 
         if (activeIndex === _slides.length - 2) {
-            firstRender = false;
-            jump = true;
             setState({
                 ...state,
                 translate: getWidth()*0.75,
@@ -153,7 +148,6 @@ const Slider = ({ slides, autoplay }) => {
               })
         }
         else {
-            jump = false;
             setState({
                 ...state,
                 translate: translate + (getWidth()*0.5),
@@ -166,7 +160,6 @@ const Slider = ({ slides, autoplay }) => {
   
     const prevSlide = () => {
         if (activeIndex === 1) {
-            jump = true;
             setState({
                 ...state,
                 translate: ((getWidth()*0.5 * (_slides.length-3)) - (getWidth()*0.25)),
@@ -175,7 +168,6 @@ const Slider = ({ slides, autoplay }) => {
             })
         }
         else {
-            jump = false;
             setState({
                 ...state,
                 translate: translate - (getWidth()*0.5),
@@ -203,7 +195,6 @@ const Slider = ({ slides, autoplay }) => {
                     width={getWidth()*0.5}
                     onClick={nextSlide}
                     transition={transition}
-                    transitionEnabled={ jump ? false : true}
                   />
               ))
           }
@@ -213,8 +204,8 @@ const Slider = ({ slides, autoplay }) => {
         {
               _slides.map((slide,i) => (
                   <>
-                    <MainHeader key={slide + i} isActive={i===activeIndex} transitionEnabled={activeIndex === 2 ? false : true}>{slide.mainHeading}</MainHeader>
-                    <Text key={slide + i} isActive={i===activeIndex} transitionEnabled={activeIndex === 2 ? false : true}>{slide.subHeading}</Text>
+                    <MainHeader key={slide + i} isActive={i===activeIndex} transition={transition}>{slide.mainHeading}</MainHeader>
+                    <Text key={slide + i} isActive={i===activeIndex} transition={transition}>{slide.subHeading}</Text>
                   </>
 
               ))
