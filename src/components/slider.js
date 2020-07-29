@@ -57,7 +57,7 @@ const Button = styled.button`
 
 const Slider = ({ slides, autoplay }) => {
 
-    const getWidth = () => window.innerWidth
+    const getWidth = () => window.innerWidth;
 
     const firstSlide = slides[0]
     const secondSlide = slides[1]
@@ -68,10 +68,11 @@ const Slider = ({ slides, autoplay }) => {
         activeIndex: 2,
         translate: getWidth()*0.75,
         transition: 1.7,
-        _slides: [secondLastSlide, lastSlide, ...slides , firstSlide, secondSlide]
+        _slides: [secondLastSlide, lastSlide, ...slides , firstSlide, secondSlide],
+        jump: false
       })
   
-      const { activeIndex, translate, transition, _slides } = state;
+      const { activeIndex, translate, transition, _slides, jump } = state;
   
       const autoPlayRef = useRef();
       const resizeRef = useRef();
@@ -128,23 +129,32 @@ const Slider = ({ slides, autoplay }) => {
     }
 
     //Trying to trigger "nextSlide" when activeIndex jumps to 2, but not working
-    // useEffect(() => {
-    //     if (!firstRender && activeIndex === 2  ) {
-    //         nextSlide();
-    //     } else {
-    //         return;
-    //     }
-    // })
+    useEffect(() => {
+        if (jump && activeIndex === 2  ) {
+            nextSlide();
+        } else {
+            return;
+        }
+    }, [jump, activeIndex])
+
+    useEffect(() => {
+        if (jump && activeIndex === _slides.length - 3 ) {
+            prevSlide();
+        } else {
+            return;
+        }
+    }, [jump, activeIndex])
 
 
     const nextSlide = () => {
-
+        
         if (activeIndex === _slides.length - 2) {
             setState({
                 ...state,
                 translate: getWidth()*0.75,
                 activeIndex: 2,
-                transition: 0
+                transition: 0,
+                jump: true
               })
         }
         else {
@@ -152,7 +162,8 @@ const Slider = ({ slides, autoplay }) => {
                 ...state,
                 translate: translate + (getWidth()*0.5),
                 activeIndex: activeIndex + 1,
-                transition: 1.7
+                transition: 1.7,
+                jump: false
               })
         }
     };
@@ -164,7 +175,8 @@ const Slider = ({ slides, autoplay }) => {
                 ...state,
                 translate: ((getWidth()*0.5 * (_slides.length-3)) - (getWidth()*0.25)),
                 activeIndex:  _slides.length - 3,
-                transition: 0
+                transition: 0,
+                jump: true
             })
         }
         else {
@@ -172,7 +184,8 @@ const Slider = ({ slides, autoplay }) => {
                 ...state,
                 translate: translate - (getWidth()*0.5),
                 activeIndex: activeIndex - 1,
-                transition: 1.7
+                transition: 1.7,
+                jump: false
             })
         }
     };
