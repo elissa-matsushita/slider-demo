@@ -170,6 +170,8 @@ const Slider = ({ slides, autoplay }) => {
     
     useEffect(() => { console.log('activeIndex after', activeIndex)});
 
+
+    //Trying to trigger "nextSlide" when activeIndex jumps to 2, but not working
     useEffect(() => {
         if (!firstRender && activeIndex === 2  ) {
             nextSlide();
